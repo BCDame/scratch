@@ -10,9 +10,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-const TailwindSidebar = () => {
+const TailwindSidebar = ({mobileOpen, setMobileOpen} :any) => {
   const pathname = usePathname();
   const [open, setOpen] = useState(true);
+
+  console.log(mobileOpen)
 
   const menu = [
     { label: "Home", Icon: <BsHouseDoorFill />, link: "/" },
@@ -25,18 +27,38 @@ const TailwindSidebar = () => {
     { label: "About", Icon: <BsPower />, link: "/about" },
   ];
   return (
-    <div
-      className={`flex flex-col relative bg-[#fff] h-screen px-2  ${
-        open ? "open w-55" : "closed w-16"
-      }`}
-    >
-      <button className={`absolute rounded-4xl bg-[#333] p-1 w-10 h-10 -right-5 text-[#fff] ${open ? "top-15" : 'top-15'} `} onClick={() => setOpen(!open)}>
+    <>
+    {mobileOpen &&
+  <div
+    className="block md:hidden mobile-overlay fixed inset-0 z-40"
+    onClick={() => setMobileOpen(!mobileOpen)}
+  ></div>
+}
+   <div
+  className={`
+    fixed top-0 left-0 h-full z-50
+    bg-[var(--theme-primary)] text-white px-2
+    transform transition-transform duration-300
+    ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
+    ${open ? "w-56" : "w-16"} 
+    md:relative md:translate-x-0
+  `}
+>
+      <button className={`hidden md:block absolute rounded-4xl bg-[#333] p-1 w-10 h-10 -right-5 text-[#fff] ${open ? "top-15" : 'top-15'} `} onClick={() => setOpen(!open)}>
         {open ? "«" : "»"}
       </button>
+
+       {/* Close button (mobile only) */}
+        <button
+          onClick={() => setMobileOpen(false)}
+          className="absolute top-4 right-4 md:hidden text-white"
+        >
+          ✕
+        </button>
       <h1 className="mb-5 text-center font-bold mt-5">MY LOGO</h1>
       <ul>
         {menu.map((item, i): any => (
-          <li key={i} className="hover:bg-[#e7e7e7] ">
+          <li key={i} className="hover:bg-[var(--theme-secondary)] ">
             <Link
               href={item.link}
               className={`flex gap-4 px-5 py-4 ${
@@ -50,6 +72,7 @@ const TailwindSidebar = () => {
         ))}
       </ul>
     </div>
+    </>
   );
 };
 
